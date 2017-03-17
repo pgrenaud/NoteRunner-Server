@@ -22,6 +22,7 @@ public class ArgumentParser {
 
     public ArgumentParser() {
         options = new Options();
+        options.addOption(new Option("h", "help", false, "display help and exit"));
         options.addOption(Option.builder()
                 .longOpt("port")
                 .hasArg()
@@ -35,38 +36,38 @@ public class ArgumentParser {
     }
 
     public void parse(String[] args) {
-        if (args.length == 0) {
-            displayHelpAndExit();
-        } else {
-            CommandLineParser parser = new DefaultParser();
+        CommandLineParser parser = new DefaultParser();
 
-            try {
-                CommandLine cmd = parser.parse(options, args);
+        try {
+            CommandLine cmd = parser.parse(options, args);
 
-                if (cmd.hasOption("port")) {
-                    try {
-                        listenPort = Integer.parseInt(cmd.getOptionValue("port"));
-
-                        if (listenPort < 0) {
-                            throw new ParseException("Port number cannot be negative");
-                        }
-                    } catch (NumberFormatException e) {
-                        throw new ParseException("Invalid port number");
-                    }
-                }
-
-                if (cmd.hasOption("verbose")) {
-                    LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
-                    Configuration configuration = loggerContext.getConfiguration();
-                    LoggerConfig loggerConfig = configuration.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-                    loggerConfig.setLevel(Level.DEBUG);
-                    loggerContext.updateLoggers();
-                }
-            } catch(ParseException e) {
-                System.err.println(e.getMessage());
-
-                System.exit(1);
+            if (cmd.hasOption("help")) {
+                displayHelpAndExit();
             }
+
+            if (cmd.hasOption("port")) {
+                try {
+                    listenPort = Integer.parseInt(cmd.getOptionValue("port"));
+
+                    if (listenPort < 0) {
+                        throw new ParseException("Port number cannot be negative");
+                    }
+                } catch (NumberFormatException e) {
+                    throw new ParseException("Invalid port number");
+                }
+            }
+
+            if (cmd.hasOption("verbose")) {
+                LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+                Configuration configuration = loggerContext.getConfiguration();
+                LoggerConfig loggerConfig = configuration.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+                loggerConfig.setLevel(Level.DEBUG);
+                loggerContext.updateLoggers();
+            }
+        } catch(ParseException e) {
+            System.err.println(e.getMessage());
+
+            System.exit(1);
         }
     }
 
