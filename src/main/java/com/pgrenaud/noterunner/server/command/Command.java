@@ -1,9 +1,9 @@
 package com.pgrenaud.noterunner.server.command;
 
 public interface Command {
-    public String getName();
-    public int getNumberOfArgs();
+    String getName();
+    int getNumberOfArgs();
 
-    public boolean isArgsValid(String[] args);
-    public void execute(String[] args);
+    boolean isArgsValid(String[] args);
+    void execute(String[] args);
 }
