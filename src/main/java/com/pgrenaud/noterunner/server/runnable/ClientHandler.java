@@ -1,5 +1,7 @@
 package com.pgrenaud.noterunner.server.runnable;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.pgrenaud.noterunner.server.exception.InvalidPacketException;
 import com.pgrenaud.noterunner.server.factory.ResponseFactory;
 import com.pgrenaud.noterunner.server.packet.Request;
@@ -29,7 +31,8 @@ public class ClientHandler implements Runnable, Stoppable {
     private PrintWriter printer;
     private volatile boolean running;
 
-    public ClientHandler(Socket socket, ClientRepository clients) {
+    @Inject
+    public ClientHandler(@Assisted Socket socket, ClientRepository clients) {
         this.socket = socket;
         this.clients = clients;
     }

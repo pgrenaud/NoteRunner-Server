@@ -1,10 +1,17 @@
 package com.pgrenaud.noterunner.server.module;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.pgrenaud.noterunner.server.factory.ClientHandlerFactory;
+import com.pgrenaud.noterunner.server.factory.NoteRunnerServerFactory;
+import com.pgrenaud.noterunner.server.factory.TerminalCommandHandlerFactory;
 
 public class NoteRunnerModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        install(new FactoryModuleBuilder().build(ClientHandlerFactory.class));
+        install(new FactoryModuleBuilder().build(NoteRunnerServerFactory.class));
+        install(new FactoryModuleBuilder().build(TerminalCommandHandlerFactory.class));
     }
 }

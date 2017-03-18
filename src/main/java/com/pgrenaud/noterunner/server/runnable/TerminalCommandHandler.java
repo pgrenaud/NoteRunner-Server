@@ -1,6 +1,7 @@
 package com.pgrenaud.noterunner.server.runnable;
 
-import com.google.inject.Injector;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.pgrenaud.noterunner.server.repository.CommandRepository;
 import jline.console.ConsoleReader;
 import jline.console.completer.StringsCompleter;
@@ -21,10 +22,12 @@ public class TerminalCommandHandler implements Runnable {
     private final ConsoleReader reader;
     private final CommandRepository commands;
 
-    public TerminalCommandHandler(ConsoleReader reader, Injector injector) {
+    @Inject
+    public TerminalCommandHandler(@Assisted ConsoleReader reader, CommandRepository commands) {
         this.reader = reader;
+        this.commands = commands;
 
-        commands = injector.getInstance(CommandRepository.class);
+        // Initialize command repository by scanning for commands
         commands.initialize();
 
         // Add commands to the completer

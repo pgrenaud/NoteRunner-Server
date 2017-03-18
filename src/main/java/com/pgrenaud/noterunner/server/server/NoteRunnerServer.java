@@ -2,11 +2,14 @@ package com.pgrenaud.noterunner.server.server;
 
 import com.djdch.log4j.QueuedConsoleAppender;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.assistedinject.Assisted;
+import com.pgrenaud.noterunner.server.factory.ClientHandlerFactory;
+import com.pgrenaud.noterunner.server.factory.TerminalCommandHandlerFactory;
 import com.pgrenaud.noterunner.server.module.NoteRunnerModule;
 import com.pgrenaud.noterunner.server.runnable.ClientHandler;
 import com.pgrenaud.noterunner.server.exception.ServerException;
-import com.pgrenaud.noterunner.server.repository.ClientRepository;
 import com.pgrenaud.noterunner.server.runnable.ShutdownHandler;
 import com.pgrenaud.noterunner.server.runnable.TerminalCommandHandler;
 import com.pgrenaud.noterunner.server.runnable.TerminalOutputWriter;
@@ -31,9 +34,9 @@ public class NoteRunnerServer implements Stoppable {
     private static final int POOL_SIZE = 99;
 
     private final int listenPort;
-    private final ClientRepository clients;
+    private final ClientHandlerFactory handlerFactory;
+    private final TerminalCommandHandlerFactory terminalFactory;
     private final Map<Integer, ClientHandler> handlers;
-    private final Injector injector;
 
     private ConsoleReader console;
     private TerminalOutputWriter terminalOutputWriter;
@@ -42,11 +45,11 @@ public class NoteRunnerServer implements Stoppable {
     private ServerSocket server;
     private boolean running;
 
-    public NoteRunnerServer(int listenPort) {
+    @Inject
+    public NoteRunnerServer(@Assisted int listenPort, ClientHandlerFactory handlerFactory, TerminalCommandHandlerFactory terminalFactory) {
         this.listenPort = listenPort;
-
-        injector = Guice.createInjector(new NoteRunnerModule());
-        clients = injector.getInstance(ClientRepository.class);
+        this.handlerFactory = handlerFactory;
+        this.terminalFactory = terminalFactory;
 
         handlers = new ConcurrentHashMap<>();
     }
@@ -75,7 +78,7 @@ public class NoteRunnerServer implements Stoppable {
             terminalOutputWriterThread.start();
 
             logger.debug("Initializing command handler");
-            terminalCommandHandler = new TerminalCommandHandler(console, injector);
+            terminalCommandHandler = terminalFactory.create(console);
 
             logger.debug("Starting command handler thread");
             Thread terminalCommandHandlerThread = new Thread(terminalCommandHandler);
@@ -114,7 +117,7 @@ public class NoteRunnerServer implements Stoppable {
 
                 try {
                     logger.debug("New connection received, sending request to client handler");
-                    ClientHandler handler = new ClientHandler(socket, clients);
+                    ClientHandler handler = handlerFactory.create(socket);
                     handlerPool.submit(handler);
                 } catch (RejectedExecutionException e) {
                     throw new ServerException("Exception occurred while submitting request to client handler.", e);
