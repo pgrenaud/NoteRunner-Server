@@ -1,15 +1,14 @@
 package com.pgrenaud.noterunner.server.server;
 
 import com.djdch.log4j.QueuedConsoleAppender;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.assistedinject.Assisted;
 import com.pgrenaud.noterunner.server.factory.ClientHandlerFactory;
+import com.pgrenaud.noterunner.server.factory.GameLoopFactory;
 import com.pgrenaud.noterunner.server.factory.TerminalCommandHandlerFactory;
-import com.pgrenaud.noterunner.server.module.NoteRunnerModule;
 import com.pgrenaud.noterunner.server.runnable.ClientHandler;
 import com.pgrenaud.noterunner.server.exception.ServerException;
+import com.pgrenaud.noterunner.server.runnable.GameLoop;
 import com.pgrenaud.noterunner.server.runnable.ShutdownHandler;
 import com.pgrenaud.noterunner.server.runnable.TerminalCommandHandler;
 import com.pgrenaud.noterunner.server.runnable.TerminalOutputWriter;
@@ -35,20 +34,23 @@ public class NoteRunnerServer implements Stoppable {
 
     private final int listenPort;
     private final ClientHandlerFactory handlerFactory;
+    private final GameLoopFactory gameFactory;
     private final TerminalCommandHandlerFactory terminalFactory;
     private final Map<Integer, ClientHandler> handlers;
 
     private ConsoleReader console;
     private TerminalOutputWriter terminalOutputWriter;
     private TerminalCommandHandler terminalCommandHandler;
+    private GameLoop gameLoop;
     private ExecutorService handlerPool;
     private ServerSocket server;
     private boolean running;
 
     @Inject
-    public NoteRunnerServer(@Assisted int listenPort, ClientHandlerFactory handlerFactory, TerminalCommandHandlerFactory terminalFactory) {
+    public NoteRunnerServer(@Assisted int listenPort, ClientHandlerFactory handlerFactory, GameLoopFactory gameFactory, TerminalCommandHandlerFactory terminalFactory) {
         this.listenPort = listenPort;
         this.handlerFactory = handlerFactory;
+        this.gameFactory = gameFactory;
         this.terminalFactory = terminalFactory;
 
         handlers = new ConcurrentHashMap<>();
@@ -83,6 +85,13 @@ public class NoteRunnerServer implements Stoppable {
             logger.debug("Starting command handler thread");
             Thread terminalCommandHandlerThread = new Thread(terminalCommandHandler);
             terminalCommandHandlerThread.start();
+
+            logger.debug("Initializing game loop");
+            gameLoop = gameFactory.create();
+
+            logger.debug("Starting game loop thread");
+            Thread gameLoopThread = new Thread(gameLoop);
+            gameLoopThread.start();
 
             try {
                 logger.debug("Creating handler thread pool with {} threads", POOL_SIZE);
@@ -137,6 +146,8 @@ public class NoteRunnerServer implements Stoppable {
     public void stop() {
         logger.debug("Stopping NoteRunnerServer");
         running = false;
+
+        gameLoop.stop();
 
         // TODO: Send shutdown event to all clients
 
