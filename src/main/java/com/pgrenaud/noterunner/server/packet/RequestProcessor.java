@@ -1,7 +1,9 @@
 package com.pgrenaud.noterunner.server.packet;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.pgrenaud.noterunner.server.factory.ResponseFactory;
+import com.pgrenaud.noterunner.server.game.World;
+import com.pgrenaud.noterunner.server.game.PlayerEntity;
 import com.pgrenaud.noterunner.server.runnable.ClientHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,9 +15,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class RequestProcessor {
     private static final Logger logger = LogManager.getLogger();
 
+    private final World world;
     private final Queue<RequestContainer> queue;
 
-    public RequestProcessor() {
+    @Inject
+    public RequestProcessor(World world) {
+        this.world = world;
+
         queue = new ConcurrentLinkedQueue<>();
     }
 
@@ -52,13 +58,11 @@ public class RequestProcessor {
     }
 
     private void doRegister(Request request, ClientHandler handler) {
-        logger.debug("Name is {}", request.getPayload().getName());
-
-        handler.sendResponse(ResponseFactory.createRegisteredResponse("OK"));
+        world.addPlayer(new PlayerEntity(handler));
     }
 
     private void doUnregister(Request request, ClientHandler handler) {
-        handler.sendResponse(ResponseFactory.createUnregisteredResponse());
+        world.removePlayer(world.getPlayer(handler));
     }
 
     public void put(RequestContainer container) {
