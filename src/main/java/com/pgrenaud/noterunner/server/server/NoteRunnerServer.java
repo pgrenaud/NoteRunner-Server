@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +36,7 @@ public class NoteRunnerServer implements Stoppable {
     private final ClientHandlerFactory handlerFactory;
     private final GameLoopFactory gameFactory;
     private final TerminalCommandHandlerFactory terminalFactory;
-    private final Map<Integer, ClientHandler> handlers;
+    private final Set<ClientHandler> handlers;
 
     private ConsoleReader console;
     private TerminalOutputWriter terminalOutputWriter;
@@ -53,7 +53,7 @@ public class NoteRunnerServer implements Stoppable {
         this.gameFactory = gameFactory;
         this.terminalFactory = terminalFactory;
 
-        handlers = new ConcurrentHashMap<>();
+        handlers = ConcurrentHashMap.newKeySet();
     }
 
     public void start() {
@@ -127,6 +127,7 @@ public class NoteRunnerServer implements Stoppable {
                 try {
                     logger.debug("New connection received, sending request to client handler");
                     ClientHandler handler = handlerFactory.create(socket);
+                    handlers.add(handler);
                     handlerPool.submit(handler);
                 } catch (RejectedExecutionException e) {
                     throw new ServerException("Exception occurred while submitting request to client handler.", e);
@@ -149,11 +150,9 @@ public class NoteRunnerServer implements Stoppable {
 
         gameLoop.stop();
 
-        // TODO: Send shutdown event to all clients
-
         logger.debug("Stopping all client handlers");
-        for (ClientHandler handler : handlers.values()) {
-            handler.stop();
+        for (ClientHandler handler : handlers) {
+            handler.kick("Server is shutting down");
         }
         handlers.clear();
 

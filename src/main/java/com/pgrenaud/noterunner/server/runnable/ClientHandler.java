@@ -3,6 +3,8 @@ package com.pgrenaud.noterunner.server.runnable;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.pgrenaud.noterunner.server.exception.InvalidPacketException;
+import com.pgrenaud.noterunner.server.factory.ResponseFactory;
+import com.pgrenaud.noterunner.server.listener.ClientHandlerListener;
 import com.pgrenaud.noterunner.server.packet.Request;
 import com.pgrenaud.noterunner.server.packet.Packet;
 import com.pgrenaud.noterunner.server.packet.RequestContainer;
@@ -19,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class ClientHandler implements Runnable, Stoppable {
     private static final Logger logger = LogManager.getLogger();
@@ -29,6 +32,7 @@ public class ClientHandler implements Runnable, Stoppable {
     private BufferedReader reader;
     private BufferedWriter writer;
     private PrintWriter printer;
+    private ClientHandlerListener listener;
     private volatile boolean running;
 
     @Inject
@@ -49,8 +53,6 @@ public class ClientHandler implements Runnable, Stoppable {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
             printer = new PrintWriter(writer, true);
-
-            // TODO: Use socket.setSoTimeout() to prevent readLine from blocking infinitely <coding@pgrenaud.com>
 
             String json;
 
@@ -97,6 +99,10 @@ public class ClientHandler implements Runnable, Stoppable {
         logger.debug("Stopping ClientHandler");
         running = false;
 
+        if (listener != null) {
+            listener.onClientHandlerStop(this);
+        }
+
         // For whatever reason, PrintWriter must be closed first, or exceptions will be raised
         if (printer != null) {
             printer.close();
@@ -138,5 +144,25 @@ public class ClientHandler implements Runnable, Stoppable {
             logger.debug("Sending response {}", response.encode()); // TODO: Remove payload from message
             printer.println(response.encode());
         }
+    }
+
+    public void kick(String message) {
+        try {
+            sendResponse(ResponseFactory.createKickResponse(message));
+        } finally {
+            stop();
+        }
+    }
+
+    public SocketAddress getAddress() {
+        return socket.getRemoteSocketAddress();
+    }
+
+    public ClientHandlerListener getListener() {
+        return listener;
+    }
+
+    public void setListener(ClientHandlerListener listener) {
+        this.listener = listener;
     }
 }
