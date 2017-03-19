@@ -18,7 +18,7 @@ Compilation
 
 Use Maven to build all the dependencies and the runnable jar files:
 
-    mvn clean install
+    mvn clean package
 
 Usage
 -----
@@ -34,8 +34,15 @@ To launch the server with more verbosity, use the `--verbose` option:
 Commands
 --------
 
-* `help`: Display list of available command.
-* `add`: Test command.
-* `list`: Test command.
+An interactive prompt is available once the server is started. Here's the available commands:
+
 * `dump`: Test command.
+* `help`: Display list of available command.
+* `kick`: Kick a player.
+* `status`: Display the current game and player status.
 * `stop`: Stop the server.
+
+Documentation
+-------------
+
+See the [network file](NETWORK.md) learn about the network protocol used to communicate.
