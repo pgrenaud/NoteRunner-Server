@@ -7,7 +7,6 @@ import com.pgrenaud.noterunner.server.packet.Request;
 import com.pgrenaud.noterunner.server.packet.Packet;
 import com.pgrenaud.noterunner.server.packet.RequestContainer;
 import com.pgrenaud.noterunner.server.packet.RequestProcessor;
-import com.pgrenaud.noterunner.server.repository.ClientRepository;
 import com.pgrenaud.noterunner.server.stoppable.Stoppable;
 import com.google.gson.JsonSyntaxException;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +24,6 @@ public class ClientHandler implements Runnable, Stoppable {
     private static final Logger logger = LogManager.getLogger();
 
     private final Socket socket;
-    private final ClientRepository clients;
     private final RequestProcessor requests;
 
     private BufferedReader reader;
@@ -34,9 +32,8 @@ public class ClientHandler implements Runnable, Stoppable {
     private volatile boolean running;
 
     @Inject
-    public ClientHandler(@Assisted Socket socket, ClientRepository clients, RequestProcessor requests) {
+    public ClientHandler(@Assisted Socket socket, RequestProcessor requests) {
         this.socket = socket;
-        this.clients = clients;
         this.requests = requests;
     }
 
