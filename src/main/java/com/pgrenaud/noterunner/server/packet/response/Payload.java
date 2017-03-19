@@ -2,15 +2,13 @@ package com.pgrenaud.noterunner.server.packet.response;
 
 public class Payload {
 
-    private String name;
+    private String message;
 
-    public String getName() {
-        return name;
+    public String getMessage() {
+        return message;
     }
 
-    public Payload setName(String name) {
-        this.name = name;
-
-        return this;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -14,10 +14,10 @@ public class DumpCommand extends BaseCommand {
 
     @Override
     public void execute(String[] args) {
-        Packet packet1 = RequestFactory.createRegisterRequest("Test");
+        Packet packet1 = RequestFactory.createRegisterRequest();
         Packet packet2 = RequestFactory.createUnregisterRequest();
 
-        logger.info("Packet: {}", packet1.encode());
-        logger.info("Packet: {}", packet2.encode());
+        logger.info("{}", packet1.encode());
+        logger.info("{}", packet2.encode());
     }
 }

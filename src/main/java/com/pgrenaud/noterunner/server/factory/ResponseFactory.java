@@ -4,10 +4,8 @@ import com.pgrenaud.noterunner.server.packet.Response;
 
 public class ResponseFactory {
 
-    public static Response createRegisteredResponse(String name) {
+    public static Response createRegisteredResponse() {
         Response response = new Response(Response.Type.REGISTERED);
-
-        response.getPayload().setName(name);
 
         return response;
     }
@@ -18,14 +16,10 @@ public class ResponseFactory {
         return response;
     }
 
-    public static Response createKickResponse() {
+    public static Response createKickResponse(String message) {
         Response response = new Response(Response.Type.KICK);
 
-        return response;
-    }
-
-    public static Response createShutdownResponse() {
-        Response response = new Response(Response.Type.SHUTDOWN);
+        response.getPayload().setMessage(message);
 
         return response;
     }

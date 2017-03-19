@@ -56,8 +56,6 @@ public class Response implements Packet {
         UNREGISTERED,
         @SerializedName("kick")
         KICK,
-        @SerializedName("shutdown")
-        SHUTDOWN,
         ;
     }
 }
