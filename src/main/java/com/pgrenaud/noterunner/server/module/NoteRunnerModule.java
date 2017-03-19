@@ -2,10 +2,10 @@ package com.pgrenaud.noterunner.server.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.pgrenaud.noterunner.server.factory.ClientHandlerFactory;
-import com.pgrenaud.noterunner.server.factory.GameLoopFactory;
-import com.pgrenaud.noterunner.server.factory.NoteRunnerServerFactory;
-import com.pgrenaud.noterunner.server.factory.TerminalCommandHandlerFactory;
+import com.pgrenaud.noterunner.server.server.ClientHandlerFactory;
+import com.pgrenaud.noterunner.server.game.GameLoopFactory;
+import com.pgrenaud.noterunner.server.server.NoteRunnerServerFactory;
+import com.pgrenaud.noterunner.server.util.TerminalCommandHandlerFactory;
 
 public class NoteRunnerModule extends AbstractModule {
 

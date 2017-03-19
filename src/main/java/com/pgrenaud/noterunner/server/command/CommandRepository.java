@@ -1,9 +1,8 @@
-package com.pgrenaud.noterunner.server.repository;
+package com.pgrenaud.noterunner.server.command;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-import com.pgrenaud.noterunner.server.command.Command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;

@@ -1,9 +1,8 @@
-package com.pgrenaud.noterunner.server.runnable;
+package com.pgrenaud.noterunner.server.game;
 
 import com.google.inject.Inject;
-import com.pgrenaud.noterunner.server.game.World;
-import com.pgrenaud.noterunner.server.packet.RequestProcessor;
-import com.pgrenaud.noterunner.server.stoppable.Stoppable;
+import com.pgrenaud.noterunner.server.network.RequestQueue;
+import com.pgrenaud.noterunner.server.util.Stoppable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,13 +16,13 @@ public class GameLoop implements Runnable, Stoppable {
     private static final double MILLI_PER_TICK = MILLISECONDS / FRAMERATE;
     private static final double NANO_PER_TICK  = NANOSECONDS / FRAMERATE;
 
-    private final RequestProcessor requests;
+    private final RequestQueue requests;
     private final World world;
 
     private volatile boolean running;
 
     @Inject
-    public GameLoop(RequestProcessor requests, World world) {
+    public GameLoop(RequestQueue requests, World world) {
         this.requests = requests;
         this.world = world;
     }

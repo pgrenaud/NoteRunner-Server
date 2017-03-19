@@ -1,8 +1,8 @@
-package com.pgrenaud.noterunner.server.runnable;
+package com.pgrenaud.noterunner.server.util;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.pgrenaud.noterunner.server.repository.CommandRepository;
+import com.pgrenaud.noterunner.server.command.CommandRepository;
 import jline.console.ConsoleReader;
 import jline.console.completer.StringsCompleter;
 import org.apache.commons.lang3.ArrayUtils;

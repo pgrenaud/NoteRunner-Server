@@ -1,7 +1,7 @@
 package com.pgrenaud.noterunner.server.entity;
 
-import com.pgrenaud.noterunner.server.packet.Response;
-import com.pgrenaud.noterunner.server.runnable.ClientHandler;
+import com.pgrenaud.noterunner.server.network.Response;
+import com.pgrenaud.noterunner.server.server.ClientHandler;
 
 public class PlayerEntity {
 

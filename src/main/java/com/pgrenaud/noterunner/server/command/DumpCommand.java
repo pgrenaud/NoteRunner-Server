@@ -1,7 +1,7 @@
 package com.pgrenaud.noterunner.server.command;
 
-import com.pgrenaud.noterunner.server.factory.RequestFactory;
-import com.pgrenaud.noterunner.server.packet.Packet;
+import com.pgrenaud.noterunner.server.network.RequestFactory;
+import com.pgrenaud.noterunner.server.network.Packet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

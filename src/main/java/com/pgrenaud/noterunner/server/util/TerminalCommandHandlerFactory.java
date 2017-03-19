@@ -1,6 +1,5 @@
-package com.pgrenaud.noterunner.server.factory;
+package com.pgrenaud.noterunner.server.util;
 
-import com.pgrenaud.noterunner.server.runnable.TerminalCommandHandler;
 import jline.console.ConsoleReader;
 
 public interface TerminalCommandHandlerFactory {

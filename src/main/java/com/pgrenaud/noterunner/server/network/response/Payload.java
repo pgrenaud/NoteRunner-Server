@@ -1,4 +1,4 @@
-package com.pgrenaud.noterunner.server.packet.response;
+package com.pgrenaud.noterunner.server.network.response;
 
 public class Payload {
 

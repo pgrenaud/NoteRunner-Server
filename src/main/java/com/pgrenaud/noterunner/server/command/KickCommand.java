@@ -1,8 +1,8 @@
 package com.pgrenaud.noterunner.server.command;
 
 import com.google.inject.Inject;
+import com.pgrenaud.noterunner.server.entity.PlayerEntity;
 import com.pgrenaud.noterunner.server.game.World;
-import com.pgrenaud.noterunner.server.game.PlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

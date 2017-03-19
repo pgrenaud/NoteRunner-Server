@@ -1,4 +1,4 @@
-package com.pgrenaud.noterunner.server.runnable;
+package com.pgrenaud.noterunner.server.util;
 
 import jline.console.ConsoleReader;
 

@@ -1,10 +1,10 @@
-package com.pgrenaud.noterunner.server.packet;
+package com.pgrenaud.noterunner.server.network;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.pgrenaud.noterunner.server.entity.PlayerEntity;
 import com.pgrenaud.noterunner.server.game.World;
-import com.pgrenaud.noterunner.server.game.PlayerEntity;
-import com.pgrenaud.noterunner.server.runnable.ClientHandler;
+import com.pgrenaud.noterunner.server.server.ClientHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,14 +12,14 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Singleton
-public class RequestProcessor {
+public class RequestQueue {
     private static final Logger logger = LogManager.getLogger();
 
     private final World world;
     private final Queue<RequestContainer> queue;
 
     @Inject
-    public RequestProcessor(World world) {
+    public RequestQueue(World world) {
         this.world = world;
 
         queue = new ConcurrentLinkedQueue<>();

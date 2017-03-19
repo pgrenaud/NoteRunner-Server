@@ -1,9 +1,10 @@
 package com.pgrenaud.noterunner.server.game;
 
 import com.google.inject.Singleton;
-import com.pgrenaud.noterunner.server.factory.ResponseFactory;
-import com.pgrenaud.noterunner.server.listener.ClientHandlerListener;
-import com.pgrenaud.noterunner.server.runnable.ClientHandler;
+import com.pgrenaud.noterunner.server.entity.PlayerEntity;
+import com.pgrenaud.noterunner.server.network.ResponseFactory;
+import com.pgrenaud.noterunner.server.server.ClientHandlerListener;
+import com.pgrenaud.noterunner.server.server.ClientHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

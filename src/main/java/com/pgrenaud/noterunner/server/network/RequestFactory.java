@@ -1,6 +1,4 @@
-package com.pgrenaud.noterunner.server.factory;
-
-import com.pgrenaud.noterunner.server.packet.Request;
+package com.pgrenaud.noterunner.server.network;
 
 public class RequestFactory {
 

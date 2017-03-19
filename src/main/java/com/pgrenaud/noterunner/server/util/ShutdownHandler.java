@@ -1,7 +1,6 @@
-package com.pgrenaud.noterunner.server.runnable;
+package com.pgrenaud.noterunner.server.util;
 
 import com.djdch.log4j.QueuedConsoleAppender;
-import com.pgrenaud.noterunner.server.stoppable.Stoppable;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

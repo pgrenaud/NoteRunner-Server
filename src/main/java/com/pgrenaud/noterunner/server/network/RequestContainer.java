@@ -1,6 +1,6 @@
-package com.pgrenaud.noterunner.server.packet;
+package com.pgrenaud.noterunner.server.network;
 
-import com.pgrenaud.noterunner.server.runnable.ClientHandler;
+import com.pgrenaud.noterunner.server.server.ClientHandler;
 
 public class RequestContainer {
 

@@ -1,17 +1,17 @@
-package com.pgrenaud.noterunner.server.packet;
+package com.pgrenaud.noterunner.server.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
-import com.pgrenaud.noterunner.server.packet.response.Payload;
+import com.pgrenaud.noterunner.server.network.request.Payload;
 
-public class Response implements Packet {
+public class Request implements Packet {
 
     private final Payload payload;
     private final Type type;
 
-    public Response(Type type) {
+    public Request(Type type) {
         this.type = type;
 
         payload = new Payload();
@@ -39,23 +39,21 @@ public class Response implements Packet {
         return gson.toJson(this);
     }
 
-    public static String encode(Response command) {
+    public static String encode(Request command) {
         return command.encode();
     }
 
-    public static Response decode(String json) throws JsonSyntaxException {
+    public static Request decode(String json) throws JsonSyntaxException {
         Gson gson = new Gson();
 
-        return gson.fromJson(json, Response.class);
+        return gson.fromJson(json, Request.class);
     }
 
     public enum Type {
-        @SerializedName("registered")
-        REGISTERED,
-        @SerializedName("unregistered")
-        UNREGISTERED,
-        @SerializedName("kick")
-        KICK,
+        @SerializedName("register")
+        REGISTER,
+        @SerializedName("unregister")
+        UNREGISTER,
         ;
     }
 }

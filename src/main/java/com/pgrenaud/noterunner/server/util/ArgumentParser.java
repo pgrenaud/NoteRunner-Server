@@ -1,4 +1,4 @@
-package com.pgrenaud.noterunner.server.parser;
+package com.pgrenaud.noterunner.server.util;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
