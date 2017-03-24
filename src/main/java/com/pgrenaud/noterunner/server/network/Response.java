@@ -57,6 +57,10 @@ public class Response implements Packet {
         UNREGISTERED,
         @SerializedName("kick")
         KICK,
+        @SerializedName("config_updated")
+        CONFIG_UPDATED,
+        @SerializedName("config_rejected")
+        CONFIG_REJECTED,
         ;
     }
 }

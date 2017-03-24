@@ -55,6 +55,8 @@ public class Request implements Packet {
         REGISTER,
         @SerializedName("unregister")
         UNREGISTER,
+        @SerializedName("update_config")
+        UPDATE_CONFIG,
         ;
     }
 }

@@ -3,6 +3,7 @@ package com.pgrenaud.noterunner.server.network;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.pgrenaud.noterunner.server.entity.PlayerEntity;
+import com.pgrenaud.noterunner.server.game.UnauthorizedException;
 import com.pgrenaud.noterunner.server.game.World;
 import com.pgrenaud.noterunner.server.server.ClientHandler;
 import org.apache.logging.log4j.LogManager;
@@ -40,21 +41,35 @@ public class RequestQueue {
         Request request = container.getRequest();
         ClientHandler handler = container.getHandler();
 
-        logger.debug("Processing {} request", request.getType());
-        switch (request.getType()) {
-            case REGISTER:
-                doRegister(request, handler);
-                break;
-            case UNREGISTER:
-                doUnregister(request, handler);
-                break;
-            default:
-                logger.warn("Request contains invalid payload, ignoring request");
+        try {
+            logger.debug("Processing {} request", request.getType());
+            switch (request.getType()) {
+                case REGISTER:
+                    doRegister(request, handler);
+                    break;
+                case UNREGISTER:
+                    doUnregister(request, handler);
+                    break;
+                case UPDATE_CONFIG:
+                    doConfig(request, handler);
+                    break;
+                default:
+                    logger.warn("Request contains invalid payload, ignoring request");
+            }
+        } catch (UnauthorizedException e) {
+            logger.debug("Unauthorized exception occurred while handling a client");
+
+            if (handler != null) {
+                handler.kick("Who are you?");
+            }
+        } catch (Exception e) {
+            logger.fatal("Unexpected exception occurred while handling a client", e);
+            throw e;
+        } finally {
+            long endTime = System.currentTimeMillis();
+
+            logger.debug("Completed {} request in {}ms", request.getType(), endTime - startTime);
         }
-
-        long endTime = System.currentTimeMillis();
-
-        logger.debug("Completed {} request in {}ms", request.getType(), endTime - startTime);
     }
 
     private void doRegister(Request request, ClientHandler handler) {
@@ -63,6 +78,10 @@ public class RequestQueue {
 
     private void doUnregister(Request request, ClientHandler handler) {
         world.removePlayer(world.getPlayer(handler));
+    }
+
+    private void doConfig(Request request, ClientHandler handler) {
+        world.updateConfig(world.getPlayer(handler), request.getPayload().getConfig());
     }
 
     public void put(RequestContainer container) {
