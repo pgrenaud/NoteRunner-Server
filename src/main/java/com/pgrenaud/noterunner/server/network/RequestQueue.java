@@ -50,6 +50,9 @@ public class RequestQueue {
                 case UNREGISTER:
                     doUnregister(request, handler);
                     break;
+                case SET_READY:
+                    doReady(request, handler);
+                    break;
                 case UPDATE_CONFIG:
                     doConfig(request, handler);
                     break;
@@ -78,6 +81,10 @@ public class RequestQueue {
 
     private void doUnregister(Request request, ClientHandler handler) {
         world.removePlayer(world.getPlayer(handler));
+    }
+
+    private void doReady(Request request, ClientHandler handler) {
+        world.readyPlayer(world.getPlayer(handler), request.getPayload().isReady());
     }
 
     private void doConfig(Request request, ClientHandler handler) {

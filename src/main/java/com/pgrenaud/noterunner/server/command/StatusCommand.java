@@ -19,17 +19,17 @@ public class StatusCommand extends BaseCommand {
 
     @Override
     public void execute(String[] args) {
-        logger.info("Players States    Addresses");
-        logger.info("------- --------- ---------");
+        logger.info("Player  Netlink   Ready Address");
+        logger.info("------- --------- ----- -------");
 
         if (world.getPlayer1() != null) {
-            logger.info("Player1 Connected {}", world.getPlayer1().getHandler().getAddress());
+            logger.info("Player1 Connected {} {}", world.getPlayer1().isReady() ? "True " : "False", world.getPlayer1().getHandler().getAddress());
         } else {
             logger.info("Player1 None");
         }
 
         if (world.getPlayer2() != null) {
-            logger.info("Player2 Connected {}", world.getPlayer2().getHandler().getAddress());
+            logger.info("Player2 Connected {} {}", world.getPlayer2().isReady() ? "True " : "False", world.getPlayer2().getHandler().getAddress());
         } else {
             logger.info("Player2 None");
         }

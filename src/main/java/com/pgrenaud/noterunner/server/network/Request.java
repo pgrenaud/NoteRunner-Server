@@ -57,6 +57,8 @@ public class Request implements Packet {
         UNREGISTER,
         @SerializedName("update_config")
         UPDATE_CONFIG,
+        @SerializedName("set_ready")
+        SET_READY,
         ;
     }
 }

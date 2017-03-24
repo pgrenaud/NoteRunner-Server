@@ -7,8 +7,12 @@ public class PlayerEntity {
 
     private final ClientHandler handler;
 
+    private boolean ready;
+
     public PlayerEntity(ClientHandler handler) {
         this.handler = handler;
+
+        ready = false;
     }
 
     public void send(Response response) {
@@ -21,5 +25,13 @@ public class PlayerEntity {
 
     public ClientHandler getHandler() {
         return handler;
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }

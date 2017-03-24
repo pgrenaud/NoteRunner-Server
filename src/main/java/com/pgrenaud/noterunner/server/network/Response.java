@@ -61,6 +61,12 @@ public class Response implements Packet {
         CONFIG_UPDATED,
         @SerializedName("config_rejected")
         CONFIG_REJECTED,
+        @SerializedName("player_connected")
+        PLAYER_CONNECTED,
+        @SerializedName("player_disconnected")
+        PLAYER_DISCONNECTED,
+        @SerializedName("player_ready")
+        PLAYER_READY,
         ;
     }
 }

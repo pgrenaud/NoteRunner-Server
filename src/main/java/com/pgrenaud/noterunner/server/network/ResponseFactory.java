@@ -4,8 +4,10 @@ import com.pgrenaud.noterunner.server.entity.ConfigEntity;
 
 public class ResponseFactory {
 
-    public static Response createRegisteredResponse() {
+    public static Response createRegisteredResponse(int playerId) {
         Response response = new Response(Response.Type.REGISTERED);
+
+        response.getPayload().setPlayer(playerId);
 
         return response;
     }
@@ -36,6 +38,38 @@ public class ResponseFactory {
         Response response = new Response(Response.Type.CONFIG_REJECTED);
 
         response.getPayload().setMessage(message);
+
+        return response;
+    }
+
+    public static Response createPlayerConnectedResponse(int playerId) {
+        Response response = new Response(Response.Type.PLAYER_CONNECTED);
+
+        response.getPayload().setPlayer(playerId);
+
+        return response;
+    }
+
+    public static Response createPlayerDisconnectedResponse(int playerId) {
+        Response response = new Response(Response.Type.PLAYER_DISCONNECTED);
+
+        response.getPayload().setPlayer(playerId);
+
+        return response;
+    }
+
+    public static Response createPlayerReadyResponse(int playerId) {
+        Response response = new Response(Response.Type.PLAYER_READY);
+
+        response.getPayload().setPlayer(playerId).setReady(true);
+
+        return response;
+    }
+
+    public static Response createPlayerNotReadyResponse(int playerId) {
+        Response response = new Response(Response.Type.PLAYER_READY);
+
+        response.getPayload().setPlayer(playerId).setReady(false);
 
         return response;
     }
