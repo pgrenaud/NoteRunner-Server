@@ -8,8 +8,9 @@ import com.pgrenaud.noterunner.server.network.response.Payload;
 
 public class Response implements Packet {
 
-    private final Payload payload;
+    @SerializedName("response")
     private final Type type;
+    private final Payload payload;
 
     public Response(Type type) {
         this.type = type;

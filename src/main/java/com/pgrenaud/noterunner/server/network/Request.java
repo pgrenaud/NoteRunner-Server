@@ -8,8 +8,9 @@ import com.pgrenaud.noterunner.server.network.request.Payload;
 
 public class Request implements Packet {
 
-    private final Payload payload;
+    @SerializedName("request")
     private final Type type;
+    private final Payload payload;
 
     public Request(Type type) {
         this.type = type;
