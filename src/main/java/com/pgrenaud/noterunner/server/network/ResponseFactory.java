@@ -1,6 +1,9 @@
 package com.pgrenaud.noterunner.server.network;
 
 import com.pgrenaud.noterunner.server.entity.ConfigEntity;
+import com.pgrenaud.noterunner.server.entity.NoteEntity;
+
+import java.util.List;
 
 public class ResponseFactory {
 
@@ -82,8 +85,10 @@ public class ResponseFactory {
         return response;
     }
 
-    public static Response createRoundPreparedResponse() {
+    public static Response createRoundPreparedResponse(ConfigEntity config, List<NoteEntity> notes) {
         Response response = new Response(Response.Type.ROUND_PREPARED);
+
+        response.getPayload().setConfig(config).setNotes(notes);
 
         return response;
     }

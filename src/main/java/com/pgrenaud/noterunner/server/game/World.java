@@ -3,6 +3,7 @@ package com.pgrenaud.noterunner.server.game;
 import com.google.inject.Singleton;
 import com.pgrenaud.noterunner.server.entity.ConfigEntity;
 import com.pgrenaud.noterunner.server.entity.NoteEntity;
+import com.pgrenaud.noterunner.server.entity.NoteSequenceEntity;
 import com.pgrenaud.noterunner.server.entity.PlayerEntity;
 import com.pgrenaud.noterunner.server.network.Response;
 import com.pgrenaud.noterunner.server.network.ResponseFactory;
@@ -11,15 +12,18 @@ import com.pgrenaud.noterunner.server.server.ClientHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Random;
 import java.util.Set;
 
 @Singleton
 public class World implements ClientHandlerListener {
     private static final Logger logger = LogManager.getLogger();
 
+    private final Random random;
+    private final ConfigEntity config;
+
     private PlayerEntity player1;
     private PlayerEntity player2;
-    private ConfigEntity config;
     private GameState state;
 
     private boolean player1Changed;
@@ -33,6 +37,7 @@ public class World implements ClientHandlerListener {
     private boolean gameover;
 
     public World() {
+        random = new Random();
         config = new ConfigEntity();
 
         config.initialize();
@@ -109,10 +114,8 @@ public class World implements ClientHandlerListener {
                         player1.reset();
                         player2.reset();
 
-                        // TODO: Generate notes sequence <coding@pgrenaud.com>
-                        broadcast(ResponseFactory.createRoundPreparedResponse());
-                        // TODO: Send config <coding@pgrenaud.com>
-                        // TODO: Send notes_sequence <coding@pgrenaud.com>
+                        NoteSequenceEntity sequence = new NoteSequenceEntity(random, config);
+                        broadcast(ResponseFactory.createRoundPreparedResponse(config, sequence.getNotes()));
                     }
                 }
                 break;
@@ -181,10 +184,8 @@ public class World implements ClientHandlerListener {
                     player1.reset();
                     player2.reset();
 
-                    // TODO: Generate notes sequence <coding@pgrenaud.com>
-                    broadcast(ResponseFactory.createRoundPreparedResponse());
-                    // TODO: Send config <coding@pgrenaud.com>
-                    // TODO: Send notes_sequence <coding@pgrenaud.com>
+                    NoteSequenceEntity sequence = new NoteSequenceEntity(random, config);
+                    broadcast(ResponseFactory.createRoundPreparedResponse(config, sequence.getNotes()));
                 }
                 break;
             default:
