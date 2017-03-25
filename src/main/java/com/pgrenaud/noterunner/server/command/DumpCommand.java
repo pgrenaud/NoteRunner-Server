@@ -16,8 +16,16 @@ public class DumpCommand extends BaseCommand {
     public void execute(String[] args) {
         Packet packet1 = RequestFactory.createRegisterRequest();
         Packet packet2 = RequestFactory.createUnregisterRequest();
+        Packet packet3 = RequestFactory.createUpdateConfigRequest();
+        Packet packet4 = RequestFactory.createSetReadyRequest();
+        Packet packet5 = RequestFactory.createDamageRequest();
+        Packet packet6 = RequestFactory.createFinishRequest();
 
         logger.info("{}", packet1.encode());
         logger.info("{}", packet2.encode());
+        logger.info("{}", packet3.encode());
+        logger.info("{}", packet4.encode());
+        logger.info("{}", packet5.encode());
+        logger.info("{}", packet6.encode());
     }
 }
