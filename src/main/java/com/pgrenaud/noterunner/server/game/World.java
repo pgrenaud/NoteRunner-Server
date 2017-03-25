@@ -20,21 +20,31 @@ public class World implements ClientHandlerListener {
     private PlayerEntity player1;
     private PlayerEntity player2;
     private ConfigEntity config;
+    private GameState state;
 
     private boolean player1Changed;
     private boolean player2Changed;
     private boolean ready1Changed;
     private boolean ready2Changed;
     private boolean configChanged;
+    private boolean roundFinish;
 
     public World() {
         config = new ConfigEntity();
 
         config.initialize();
+
+        state = GameState.LOBBY;
+
+        player1Changed = false;
+        player2Changed = false;
+        ready1Changed = false;
+        ready2Changed = false;
+        configChanged = false;
+        roundFinish = false;
     }
 
     public void tick() {
-        // TODO: Ensure that we are in lobby <coding@pgrenaud.com>
         if (player1Changed) {
             if (player1 != null) {
                 logger.info("Player1 connected");
@@ -43,8 +53,6 @@ public class World implements ClientHandlerListener {
                 logger.info("Player1 disconnected");
                 broadcast(ResponseFactory.createPlayerDisconnectedResponse(1));
             }
-
-            player1Changed = false;
         }
 
         if (player2Changed) {
@@ -55,8 +63,6 @@ public class World implements ClientHandlerListener {
                 logger.info("Player2 disconnected");
                 broadcast(ResponseFactory.createPlayerDisconnectedResponse(2));
             }
-
-            player2Changed = false;
         }
 
         if (ready1Changed) {
@@ -67,8 +73,6 @@ public class World implements ClientHandlerListener {
                 logger.info("Player1 is not ready");
                 broadcast(ResponseFactory.createPlayerNotReadyResponse(1));
             }
-
-            ready1Changed = false;
         }
 
         if (ready2Changed) {
@@ -79,16 +83,81 @@ public class World implements ClientHandlerListener {
                 logger.info("Player2 is not ready");
                 broadcast(ResponseFactory.createPlayerNotReadyResponse(2));
             }
-
-            ready2Changed = false;
         }
 
-        if (configChanged) {
-            logger.info("Config updated");
-            broadcast(ResponseFactory.createConfigResponse(config));
+        switch (state) {
+            case LOBBY:
+                if (configChanged) {
+                    logger.info("Config updated");
+                    broadcast(ResponseFactory.createConfigResponse(config));
+                }
 
-            configChanged = false;
+                if (ready1Changed || ready2Changed) {
+                    // FIXME: Should apply a 3 second cooldown before checking <coding@pgrenaud.com>
+                    if (player1.isReady() && player2.isReady()) {
+                        // TODO: Generate notes sequence <coding@pgrenaud.com>
+                        broadcast(ResponseFactory.createRoundPreparedResponse());
+                        // TODO: Send config <coding@pgrenaud.com>
+                        // TODO: Send notes_sequence <coding@pgrenaud.com>
+
+                        player1.reset();
+                        player2.reset();
+
+                        logger.info("Round prepared");
+                        state = GameState.ROUND_LOADING;
+                    }
+                }
+                break;
+            case ROUND_LOADING:
+                if (player1Changed || player2Changed) {
+                    resetState(); // One player disconnected, abort
+                    break;
+                }
+
+                if (ready1Changed || ready2Changed) {
+                    if (player1.isReady() && player2.isReady()) {
+                        broadcast(ResponseFactory.createRoundBeganResponse());
+
+                        player1.reset();
+                        player2.reset();
+
+                        logger.info("Round began");
+                        state = GameState.ROUND_RUNNING;
+                    }
+                }
+                break;
+            case ROUND_RUNNING:
+                if (player1Changed || player2Changed) {
+                    resetState(); // One player disconnected, abort
+                    break;
+                }
+
+                if (roundFinish) {
+                    // TODO: Check for winner/looser/gameover <coding@pgrenaud.com>
+
+                    // TODO: Generate notes sequence <coding@pgrenaud.com>
+                    broadcast(ResponseFactory.createRoundPreparedResponse());
+                    // TODO: Send config <coding@pgrenaud.com>
+                    // TODO: Send notes_sequence <coding@pgrenaud.com>
+
+                    player1.reset();
+                    player2.reset();
+
+                    logger.info("Round ended");
+                    state = GameState.ROUND_LOADING;
+                }
+                break;
+            default:
+                logger.error("That should not happened");
+                state = GameState.LOBBY;
         }
+
+        player1Changed = false;
+        player2Changed = false;
+        ready1Changed = false;
+        ready2Changed = false;
+        configChanged = false;
+        roundFinish = false;
     }
 
     public void addPlayer(PlayerEntity player) {
@@ -146,8 +215,12 @@ public class World implements ClientHandlerListener {
     }
 
     public void readyPlayer(PlayerEntity player, Boolean ready) {
+        if (state != GameState.LOBBY && state != GameState.ROUND_LOADING) {
+            throw new BadStateException();
+        }
+
         if (ready == null) {
-            player.send(ResponseFactory.createInvlidConfigResponse("Ready is missing")); // Too lazy to make a dedicated response for this
+            player.send(ResponseFactory.createInvalidRequestResponse("Ready is missing")); // Too lazy to make a dedicated response for this
             return;
         }
 
@@ -163,11 +236,13 @@ public class World implements ClientHandlerListener {
     }
 
     public void updateConfig(PlayerEntity player, ConfigEntity newConfig) {
-        // TODO: Ensure that we are in lobby <coding@pgrenaud.com>
+        if (state != GameState.LOBBY) {
+            throw new BadStateException();
+        }
 
         // TODO: Move all this logic inside ConfigEntity <coding@pgrenaud.com>
         if (newConfig == null) {
-            player.send(ResponseFactory.createInvlidConfigResponse("Config is missing"));
+            player.send(ResponseFactory.createInvalidRequestResponse("Config is missing"));
             return;
         }
 
@@ -176,22 +251,22 @@ public class World implements ClientHandlerListener {
         Set<NoteEntity> notesEnabled = newConfig.getNotesEnabled();
 
         if (sequenceLength < 3 || sequenceLength > 15) {
-            player.send(ResponseFactory.createInvlidConfigResponse("Invalid sequence length (must be between 3 and 15)"));
+            player.send(ResponseFactory.createInvalidRequestResponse("Invalid sequence length (must be between 3 and 15)"));
             return;
         }
 
         if (playerHealth < 1 || playerHealth > 20) {
-            player.send(ResponseFactory.createInvlidConfigResponse("Invalid player health (must be between 1 and 20)"));
+            player.send(ResponseFactory.createInvalidRequestResponse("Invalid player health (must be between 1 and 20)"));
             return;
         }
 
         if (notesEnabled.remove(null)) {
-            player.send(ResponseFactory.createInvlidConfigResponse("One or more notes are invalid"));
+            player.send(ResponseFactory.createInvalidRequestResponse("One or more notes are invalid"));
             return;
         }
 
         if (notesEnabled.size() < 3) {
-            player.send(ResponseFactory.createInvlidConfigResponse("At least 3 notes need to be enabled"));
+            player.send(ResponseFactory.createInvalidRequestResponse("At least 3 notes need to be enabled"));
             return;
         }
 
@@ -201,6 +276,22 @@ public class World implements ClientHandlerListener {
         config.getNotesEnabled().addAll(notesEnabled);
 
         configChanged = true;
+    }
+
+    public void finishRound(PlayerEntity player) {
+        if (state != GameState.ROUND_RUNNING) {
+            throw new BadStateException();
+        }
+
+        if (player1 == player) {
+            player1.setFinish(true);
+
+            roundFinish = true;
+        } else if (player2 == player) {
+            player2.setFinish(true);
+
+            roundFinish = true;
+        }
     }
 
     public boolean isFull() {
@@ -232,6 +323,19 @@ public class World implements ClientHandlerListener {
         if (player2 != null) {
             player2.send(response);
         }
+    }
+
+    public GameState getState() {
+        return state;
+    }
+
+    public void resetState() {
+        logger.warn("Round abort, loading lobby");
+        broadcast(ResponseFactory.createLobbyLoadedResponse());
+
+        player1.reset();
+        player2.reset();
+        state = GameState.LOBBY;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.pgrenaud.noterunner.server.network;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.pgrenaud.noterunner.server.entity.PlayerEntity;
+import com.pgrenaud.noterunner.server.game.BadStateException;
 import com.pgrenaud.noterunner.server.game.UnauthorizedException;
 import com.pgrenaud.noterunner.server.game.World;
 import com.pgrenaud.noterunner.server.server.ClientHandler;
@@ -56,6 +57,9 @@ public class RequestQueue {
                 case UPDATE_CONFIG:
                     doConfig(request, handler);
                     break;
+                case FINISH:
+                    doFinish(request, handler);
+                    break;
                 default:
                     logger.warn("Request contains invalid payload, ignoring request");
             }
@@ -64,6 +68,12 @@ public class RequestQueue {
 
             if (handler != null) {
                 handler.kick("Who are you?");
+            }
+        } catch (BadStateException e) {
+            logger.debug("Bad state exception occurred while handling a client");
+
+            if (handler != null) {
+                handler.sendResponse(ResponseFactory.createInvalidRequestResponse("What are you trying to do?"));
             }
         } catch (Exception e) {
             logger.fatal("Unexpected exception occurred while handling a client", e);
@@ -89,6 +99,10 @@ public class RequestQueue {
 
     private void doConfig(Request request, ClientHandler handler) {
         world.updateConfig(world.getPlayer(handler), request.getPayload().getConfig());
+    }
+
+    private void doFinish(Request request, ClientHandler handler) {
+        world.finishRound(world.getPlayer(handler));
     }
 
     public void put(RequestContainer container) {

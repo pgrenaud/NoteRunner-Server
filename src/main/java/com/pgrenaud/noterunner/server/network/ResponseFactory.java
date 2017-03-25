@@ -34,8 +34,8 @@ public class ResponseFactory {
         return response;
     }
 
-    public static Response createInvlidConfigResponse(String message) {
-        Response response = new Response(Response.Type.CONFIG_REJECTED);
+    public static Response createInvalidRequestResponse(String message) {
+        Response response = new Response(Response.Type.REQUEST_REJECTED);
 
         response.getPayload().setMessage(message);
 
@@ -70,6 +70,30 @@ public class ResponseFactory {
         Response response = new Response(Response.Type.PLAYER_READY);
 
         response.getPayload().setPlayer(playerId).setReady(false);
+
+        return response;
+    }
+
+    public static Response createRoundPreparedResponse() {
+        Response response = new Response(Response.Type.ROUND_PREPARED);
+
+        return response;
+    }
+
+    public static Response createRoundBeganResponse() {
+        Response response = new Response(Response.Type.ROUND_BEGAN);
+
+        return response;
+    }
+
+    public static Response createRoundEndedResponse() {
+        Response response = new Response(Response.Type.ROUND_ENDED);
+
+        return response;
+    }
+
+    public static Response createLobbyLoadedResponse() {
+        Response response = new Response(Response.Type.LOBBY_LOADED);
 
         return response;
     }

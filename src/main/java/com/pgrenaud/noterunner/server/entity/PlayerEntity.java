@@ -8,11 +8,13 @@ public class PlayerEntity {
     private final ClientHandler handler;
 
     private boolean ready;
+    private boolean finish;
 
     public PlayerEntity(ClientHandler handler) {
         this.handler = handler;
 
         ready = false;
+        finish = false;
     }
 
     public void send(Response response) {
@@ -33,5 +35,18 @@ public class PlayerEntity {
 
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public void reset() {
+        ready = false;
+        finish = false;
     }
 }

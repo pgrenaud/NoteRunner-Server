@@ -62,14 +62,22 @@ public class Response implements Packet {
         KICK,
         @SerializedName("config_updated")
         CONFIG_UPDATED,
-        @SerializedName("config_rejected")
-        CONFIG_REJECTED,
+        @SerializedName("request_rejected")
+        REQUEST_REJECTED,
         @SerializedName("player_connected")
         PLAYER_CONNECTED,
         @SerializedName("player_disconnected")
         PLAYER_DISCONNECTED,
         @SerializedName("player_ready")
         PLAYER_READY,
+        @SerializedName("round_prepared")
+        ROUND_PREPARED,
+        @SerializedName("round_began")
+        ROUND_BEGAN,
+        @SerializedName("round_ended")
+        ROUND_ENDED,
+        @SerializedName("lobby_loaded")
+        LOBBY_LOADED,
         ;
     }
 }
