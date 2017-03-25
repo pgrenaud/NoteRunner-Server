@@ -7,8 +7,8 @@ import com.pgrenaud.noterunner.server.entity.NoteSequenceEntity;
 import com.pgrenaud.noterunner.server.entity.PlayerEntity;
 import com.pgrenaud.noterunner.server.network.Response;
 import com.pgrenaud.noterunner.server.network.ResponseFactory;
-import com.pgrenaud.noterunner.server.server.ClientHandlerListener;
 import com.pgrenaud.noterunner.server.server.ClientHandler;
+import com.pgrenaud.noterunner.server.server.ClientHandlerListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -2,10 +2,10 @@ package com.pgrenaud.noterunner.server;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.pgrenaud.noterunner.server.server.NoteRunnerServerFactory;
 import com.pgrenaud.noterunner.server.module.NoteRunnerModule;
-import com.pgrenaud.noterunner.server.util.ArgumentParser;
 import com.pgrenaud.noterunner.server.server.NoteRunnerServer;
+import com.pgrenaud.noterunner.server.server.NoteRunnerServerFactory;
+import com.pgrenaud.noterunner.server.util.ArgumentParser;
 
 public class Application {
 

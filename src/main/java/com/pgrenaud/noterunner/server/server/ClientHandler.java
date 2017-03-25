@@ -1,15 +1,15 @@
 package com.pgrenaud.noterunner.server.server;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.pgrenaud.noterunner.server.network.InvalidPacketException;
-import com.pgrenaud.noterunner.server.network.ResponseFactory;
-import com.pgrenaud.noterunner.server.network.Request;
 import com.pgrenaud.noterunner.server.network.Packet;
+import com.pgrenaud.noterunner.server.network.Request;
 import com.pgrenaud.noterunner.server.network.RequestContainer;
 import com.pgrenaud.noterunner.server.network.RequestQueue;
+import com.pgrenaud.noterunner.server.network.ResponseFactory;
 import com.pgrenaud.noterunner.server.util.Stoppable;
-import com.google.gson.JsonSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
