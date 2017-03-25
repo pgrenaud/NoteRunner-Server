@@ -209,6 +209,7 @@ public class World implements ClientHandlerListener {
             player1 = player;
             player1.getHandler().setListener(this);
             player1.send(ResponseFactory.createRegisteredResponse(1));
+            player1.send(ResponseFactory.createLobbyLoadedResponse());
             player1.send(ResponseFactory.createConfigResponse(config));
 
             // Very hacky ... but we need to synchronize states
@@ -225,6 +226,7 @@ public class World implements ClientHandlerListener {
             player2 = player;
             player2.getHandler().setListener(this);
             player2.send(ResponseFactory.createRegisteredResponse(2));
+            player1.send(ResponseFactory.createLobbyLoadedResponse());
             player2.send(ResponseFactory.createConfigResponse(config));
 
             // Very hacky ... but we need to synchronize states
