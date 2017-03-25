@@ -25,11 +25,11 @@ Usage
 
 Launch the server:
 
-    java -jar target/noterunner-server-1.0.0.jar
+    java -jar target/noterunner-server-1.0.1-SNAPSHOT.jar
 
 To launch the server with more verbosity, use the `--verbose` option:
 
-    java -jar target/noterunner-server-1.0.0.jar --verbose
+    java -jar target/noterunner-server-1.0.1-SNAPSHOT.jar --verbose
 
 Commands
 --------
