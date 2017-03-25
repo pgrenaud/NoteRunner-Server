@@ -38,6 +38,7 @@ An interactive prompt is available once the server is started. Here's the availa
 
 * `dump`: Test command.
 * `help`: Display list of available command.
+* `lobby`: Abort any round and return to lobby.
 * `kick`: Kick a player.
 * `status`: Display the current game and player status.
 * `stop`: Stop the server.
