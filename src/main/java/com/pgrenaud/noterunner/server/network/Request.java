@@ -10,15 +10,18 @@ public class Request implements Packet {
 
     @SerializedName("request")
     private final Type type;
-    private final Payload payload;
+
+    private Payload payload;
 
     public Request(Type type) {
         this.type = type;
-
-        payload = new Payload();
     }
 
     public Payload getPayload() {
+        if (payload == null) {
+            payload = new Payload();
+        }
+
         return payload;
     }
 
