@@ -313,8 +313,8 @@ public class World implements ClientHandlerListener {
             return;
         }
 
-        config.setPlayerHealth(sequenceLength);
-        config.setSequenceLength(playerHealth);
+        config.setPlayerHealth(playerHealth);
+        config.setSequenceLength(sequenceLength);
         config.getNotesEnabled().clear();
         config.getNotesEnabled().addAll(notesEnabled);
 
