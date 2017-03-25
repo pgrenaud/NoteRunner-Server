@@ -9,12 +9,14 @@ public class PlayerEntity {
 
     private boolean ready;
     private boolean finish;
+    private int health;
 
     public PlayerEntity(ClientHandler handler) {
         this.handler = handler;
 
         ready = false;
         finish = false;
+        health = 0;
     }
 
     public void send(Response response) {
@@ -43,6 +45,14 @@ public class PlayerEntity {
 
     public void setFinish(boolean finish) {
         this.finish = finish;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public void reset() {

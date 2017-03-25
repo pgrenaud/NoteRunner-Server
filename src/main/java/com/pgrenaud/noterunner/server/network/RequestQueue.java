@@ -57,6 +57,9 @@ public class RequestQueue {
                 case UPDATE_CONFIG:
                     doConfig(request, handler);
                     break;
+                case DAMAGE:
+                    doDamage(request, handler);
+                    break;
                 case FINISH:
                     doFinish(request, handler);
                     break;
@@ -99,6 +102,10 @@ public class RequestQueue {
 
     private void doConfig(Request request, ClientHandler handler) {
         world.updateConfig(world.getPlayer(handler), request.getPayload().getConfig());
+    }
+
+    private void doDamage(Request request, ClientHandler handler) {
+        world.damagePlayer(world.getPlayer(handler));
     }
 
     private void doFinish(Request request, ClientHandler handler) {

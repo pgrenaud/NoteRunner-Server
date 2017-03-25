@@ -74,6 +74,14 @@ public class ResponseFactory {
         return response;
     }
 
+    public static Response createPlayerHealthResponse(int playerId, int health) {
+        Response response = new Response(Response.Type.PLAYER_HEALTH);
+
+        response.getPayload().setPlayer(playerId).setHealth(health);
+
+        return response;
+    }
+
     public static Response createRoundPreparedResponse() {
         Response response = new Response(Response.Type.ROUND_PREPARED);
 
@@ -88,6 +96,14 @@ public class ResponseFactory {
 
     public static Response createRoundEndedResponse() {
         Response response = new Response(Response.Type.ROUND_ENDED);
+
+        return response;
+    }
+
+    public static Response createGameoverResponse(int playerId) {
+        Response response = new Response(Response.Type.GAMEOVER);
+
+        response.getPayload().setPlayer(playerId);
 
         return response;
     }

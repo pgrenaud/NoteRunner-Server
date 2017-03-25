@@ -62,6 +62,8 @@ public class Request implements Packet {
         UPDATE_CONFIG,
         @SerializedName("set_ready")
         SET_READY,
+        @SerializedName("damage")
+        DAMAGE,
         @SerializedName("finish")
         FINISH,
         ;

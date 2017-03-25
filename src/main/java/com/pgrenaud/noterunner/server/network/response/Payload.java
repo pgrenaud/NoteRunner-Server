@@ -5,6 +5,7 @@ import com.pgrenaud.noterunner.server.entity.ConfigEntity;
 public class Payload {
 
     private ConfigEntity config;
+    private Integer health;
     private String message;
     private Integer player;
     private Boolean ready;
@@ -15,6 +16,16 @@ public class Payload {
 
     public Payload setConfig(ConfigEntity config) {
         this.config = config;
+
+        return this;
+    }
+
+    public Integer getHealth() {
+        return health;
+    }
+
+    public Payload setHealth(Integer health) {
+        this.health = health;
 
         return this;
     }

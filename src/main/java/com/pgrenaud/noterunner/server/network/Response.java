@@ -70,12 +70,16 @@ public class Response implements Packet {
         PLAYER_DISCONNECTED,
         @SerializedName("player_ready")
         PLAYER_READY,
+        @SerializedName("player_health")
+        PLAYER_HEALTH,
         @SerializedName("round_prepared")
         ROUND_PREPARED,
         @SerializedName("round_began")
         ROUND_BEGAN,
         @SerializedName("round_ended")
         ROUND_ENDED,
+        @SerializedName("gameover")
+        GAMEOVER,
         @SerializedName("lobby_loaded")
         LOBBY_LOADED,
         ;

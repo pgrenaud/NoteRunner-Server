@@ -24,10 +24,13 @@ public class World implements ClientHandlerListener {
 
     private boolean player1Changed;
     private boolean player2Changed;
+    private boolean player1Damaged;
+    private boolean player2Damaged;
     private boolean ready1Changed;
     private boolean ready2Changed;
     private boolean configChanged;
     private boolean roundFinish;
+    private boolean gameover;
 
     public World() {
         config = new ConfigEntity();
@@ -38,10 +41,13 @@ public class World implements ClientHandlerListener {
 
         player1Changed = false;
         player2Changed = false;
+        player1Damaged = false;
+        player2Damaged = false;
         ready1Changed = false;
         ready2Changed = false;
         configChanged = false;
         roundFinish = false;
+        gameover = false;
     }
 
     public void tick() {
@@ -94,17 +100,19 @@ public class World implements ClientHandlerListener {
 
                 if (ready1Changed || ready2Changed) {
                     // FIXME: Should apply a 3 second cooldown before checking <coding@pgrenaud.com>
-                    if (player1.isReady() && player2.isReady()) {
+                    if (player1 != null && player2 != null && player1.isReady() && player2.isReady()) {
+                        player1.setHealth(config.getPlayerHealth());
+                        player2.setHealth(config.getPlayerHealth());
+
+                        logger.info("Round prepared");
+                        state = GameState.ROUND_LOADING;
+                        player1.reset();
+                        player2.reset();
+
                         // TODO: Generate notes sequence <coding@pgrenaud.com>
                         broadcast(ResponseFactory.createRoundPreparedResponse());
                         // TODO: Send config <coding@pgrenaud.com>
                         // TODO: Send notes_sequence <coding@pgrenaud.com>
-
-                        player1.reset();
-                        player2.reset();
-
-                        logger.info("Round prepared");
-                        state = GameState.ROUND_LOADING;
                     }
                 }
                 break;
@@ -116,13 +124,12 @@ public class World implements ClientHandlerListener {
 
                 if (ready1Changed || ready2Changed) {
                     if (player1.isReady() && player2.isReady()) {
-                        broadcast(ResponseFactory.createRoundBeganResponse());
-
+                        logger.info("Round began");
+                        state = GameState.ROUND_RUNNING;
                         player1.reset();
                         player2.reset();
 
-                        logger.info("Round began");
-                        state = GameState.ROUND_RUNNING;
+                        broadcast(ResponseFactory.createRoundBeganResponse());
                     }
                 }
                 break;
@@ -132,19 +139,52 @@ public class World implements ClientHandlerListener {
                     break;
                 }
 
-                if (roundFinish) {
-                    // TODO: Check for winner/looser/gameover <coding@pgrenaud.com>
+                if (player1Damaged) {
+                    if (player1.getHealth() > 0) {
+                        logger.info("Player1 lost health (HP:{}/{})", player1.getHealth(), config.getPlayerHealth());
+                        broadcast(ResponseFactory.createPlayerHealthResponse(1, player1.getHealth()));
+                    } else {
+                        logger.info("Player1 died");
+                        broadcast(ResponseFactory.createGameoverResponse(1));
+
+                        gameover = true;
+                    }
+                }
+
+                if (player2Damaged) {
+                    if (player2.getHealth() > 0) {
+                        logger.info("Player1 lost health (HP:{}/{})", player2.getHealth(), config.getPlayerHealth());
+                        broadcast(ResponseFactory.createPlayerHealthResponse(2, player2.getHealth()));
+                    } else {
+                        logger.info("Player2 died");
+                        broadcast(ResponseFactory.createGameoverResponse(2));
+
+                        gameover = true;
+                    }
+                }
+
+                if (roundFinish || gameover) {
+                    logger.info("Round ended");
+                    broadcast(ResponseFactory.createRoundEndedResponse());
+                }
+
+                if (gameover) {
+                    logger.info("Game over, loading lobby");
+                    state = GameState.LOBBY;
+                    player1.reset();
+                    player2.reset();
+
+                    broadcast(ResponseFactory.createLobbyLoadedResponse());
+                } else if (roundFinish) {
+                    logger.info("Round ended");
+                    state = GameState.ROUND_LOADING;
+                    player1.reset();
+                    player2.reset();
 
                     // TODO: Generate notes sequence <coding@pgrenaud.com>
                     broadcast(ResponseFactory.createRoundPreparedResponse());
                     // TODO: Send config <coding@pgrenaud.com>
                     // TODO: Send notes_sequence <coding@pgrenaud.com>
-
-                    player1.reset();
-                    player2.reset();
-
-                    logger.info("Round ended");
-                    state = GameState.ROUND_LOADING;
                 }
                 break;
             default:
@@ -154,10 +194,13 @@ public class World implements ClientHandlerListener {
 
         player1Changed = false;
         player2Changed = false;
+        player1Damaged = false;
+        player2Damaged = false;
         ready1Changed = false;
         ready2Changed = false;
         configChanged = false;
         roundFinish = false;
+        gameover = false;
     }
 
     public void addPlayer(PlayerEntity player) {
@@ -278,6 +321,22 @@ public class World implements ClientHandlerListener {
         configChanged = true;
     }
 
+    public void damagePlayer(PlayerEntity player) {
+        if (state != GameState.ROUND_RUNNING) {
+            throw new BadStateException();
+        }
+
+        if (player1 == player) {
+            player1.setHealth(player1.getHealth() - 1);
+
+            player1Damaged = true;
+        } else if (player2 == player) {
+            player2.setHealth(player2.getHealth() - 1);
+
+            player2Damaged = true;
+        }
+    }
+
     public void finishRound(PlayerEntity player) {
         if (state != GameState.ROUND_RUNNING) {
             throw new BadStateException();
@@ -331,11 +390,11 @@ public class World implements ClientHandlerListener {
 
     public void resetState() {
         logger.warn("Round abort, loading lobby");
-        broadcast(ResponseFactory.createLobbyLoadedResponse());
-
+        state = GameState.LOBBY;
         player1.reset();
         player2.reset();
-        state = GameState.LOBBY;
+
+        broadcast(ResponseFactory.createLobbyLoadedResponse());
     }
 
     @Override
