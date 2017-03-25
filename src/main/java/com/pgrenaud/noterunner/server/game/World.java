@@ -156,7 +156,7 @@ public class World implements ClientHandlerListener {
 
                 if (player2Damaged) {
                     if (player2.getHealth() > 0) {
-                        logger.info("Player1 lost health (HP:{}/{})", player2.getHealth(), config.getPlayerHealth());
+                        logger.info("Player2 lost health (HP:{}/{})", player2.getHealth(), config.getPlayerHealth());
                         broadcast(ResponseFactory.createPlayerHealthResponse(2, player2.getHealth()));
                     } else {
                         logger.info("Player2 died");
@@ -179,7 +179,7 @@ public class World implements ClientHandlerListener {
 
                     broadcast(ResponseFactory.createLobbyLoadedResponse());
                 } else if (roundFinish) {
-                    logger.info("Round ended");
+                    logger.info("Round prepared");
                     state = GameState.ROUND_LOADING;
                     player1.reset();
                     player2.reset();
@@ -348,9 +348,13 @@ public class World implements ClientHandlerListener {
         if (player1 == player) {
             player1.setFinish(true);
 
+            damagePlayer(player2);
+
             roundFinish = true;
         } else if (player2 == player) {
             player2.setFinish(true);
+
+            damagePlayer(player1);
 
             roundFinish = true;
         }
