@@ -311,8 +311,8 @@ public class World implements ClientHandlerListener {
             return;
         }
 
-        if (notesEnabled.size() < 3) {
-            player.send(ResponseFactory.createInvalidRequestResponse("At least 3 notes need to be enabled"));
+        if (notesEnabled.size() < 4) {
+            player.send(ResponseFactory.createInvalidRequestResponse("At least 4 notes need to be enabled"));
             return;
         }
 

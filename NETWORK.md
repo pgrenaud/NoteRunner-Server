@@ -56,7 +56,7 @@
 * You MAY send this request if you wish to update the match settings.
 * YOU WILL either receive a `config_updated` or a `config_rejected` response in return.
 * You MUST supply a `config` object in the payload that respect the following rules:
-  * You MUST define a integer `sequence_length` with a value between 3 and 15.
+  * You MUST define a integer `sequence_length` with a value between 4 and 15.
   * You MUST define a integer `player_health` with a value between 1 and 20.
   * You MUST define a list `notes_enabled` with at least 3 **unique** elements from A, B, C, D, E, F and G.
 * You CANNOT send this request when you are not in the lobby.
