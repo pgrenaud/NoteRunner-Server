@@ -398,8 +398,13 @@ public class World implements ClientHandlerListener {
     public void resetState() {
         logger.warn("Round abort, loading lobby");
         state = GameState.LOBBY;
-        player1.reset();
-        player2.reset();
+
+        if (player1 != null) {
+            player1.reset();
+        }
+        if (player2 != null) {
+            player2.reset();
+        }
 
         broadcast(ResponseFactory.createLobbyLoadedResponse());
     }
