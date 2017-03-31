@@ -36,6 +36,7 @@ Commands
 
 An interactive prompt is available once the server is started. Here's the available commands:
 
+* `allready`: Force all players to be ready.
 * `dump`: Test command.
 * `help`: Display list of available command.
 * `lobby`: Abort any round and return to lobby.
